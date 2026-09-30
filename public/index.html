@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tools · Wessel Smit</title>
+  <meta name="description" content="Security- en netwerktools die volledig in je browser draaien: JWT-decoder, encoder, hashes, subnetcalculator, wachtwoorden en Unix-tijd.">
+  <meta name="theme-color" content="#0a0f1e">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%230a0f1e'/><text x='50' y='66' font-size='52' text-anchor='middle' fill='%2300ff88' font-family='monospace' font-weight='bold'>&gt;_</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="grid-overlay" aria-hidden="true"></div>
+  <div class="scanlines" aria-hidden="true"></div>
+
+  <header class="nav">
+    <nav class="nav-inner" aria-label="Navigatie">
+      <a href="#" class="nav-prompt"><span class="user">wessel</span>@smit:<span class="path" id="nav-path">~/tools</span>$<span class="caret"></span></a>
+      <a href="https://wesselsmit.com/" class="back" id="nav-back">← portfolio</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ================= Overzicht ================= -->
+    <section id="view-home">
+      <div class="section-head">
+        <div class="cmd">ls ./tools</div>
+        <h1>Tools</h1>
+        <p>Handige tools voor security, netwerken en development.</p>
+      </div>
+
+      <!--
+        Nieuwe tool toevoegen:
+        1. Kopieer hieronder een kaart (href="#naam")
+        2. Voeg een <section class="tool" data-tool="naam"> toe onder "Tools"
+        3. Zet de logica in app.js
+      -->
+      <div class="modules-grid">
+        <a href="#jwt" class="card" style="--i: 0">
+          <div class="card-icon" aria-hidden="true">🔑</div>
+          <h2>JWT-decoder</h2>
+          <p>Bekijk header en payload van een JSON Web Token, check de vervaldatum en verifieer HMAC-handtekeningen.</p>
+          <span class="arrow" aria-hidden="true">→</span>
+        </a>
+        <a href="#encode" class="card" style="--i: 1">
+          <div class="card-icon" aria-hidden="true">🔄</div>
+          <h2>Encoder / decoder</h2>
+          <p>Base64, Base64URL, hex, URL, HTML-entities, binair en ROT13 heen en terug.</p>
+          <span class="arrow" aria-hidden="true">→</span>
+        </a>
+        <a href="#hash" class="card" style="--i: 2">
+          <div class="card-icon" aria-hidden="true">#️⃣</div>
+          <h2>Hash-generator</h2>
+          <p>MD5, SHA-1, SHA-256, SHA-384 en SHA-512 van tekst of een bestand.</p>
+          <span class="arrow" aria-hidden="true">→</span>
+        </a>
+        <a href="#subnet" class="card" style="--i: 3">
+          <div class="card-icon" aria-hidden="true">🌐</div>
+          <h2>Subnetcalculator</h2>
+          <p>Netwerk, broadcast, host-range, wildcard en binaire weergave van elk IPv4-subnet.</p>
+          <span class="arrow" aria-hidden="true">→</span>
+        </a>
+        <a href="#password" class="card" style="--i: 4">
+          <div class="card-icon" aria-hidden="true">🔐</div>
+          <h2>Wachtwoorden</h2>
+          <p>Genereer sterke wachtwoorden en meet hoe lang het kraken van je wachtwoord zou duren.</p>
+          <span class="arrow" aria-hidden="true">→</span>
+        </a>
+        <a href="#time" class="card" style="--i: 5">
+          <div class="card-icon" aria-hidden="true">⏱️</div>
+          <h2>Unix-tijd</h2>
+          <p>Zet Unix-timestamps om naar leesbare datums en andersom, in seconden of milliseconden.</p>
+          <span class="arrow" aria-hidden="true">→</span>
+        </a>
+      </div>
+
+      <p class="privacy"><b>●</b> Alles draait lokaal in je browser. Er wordt niets naar een server gestuurd.</p>
+    </section>
+
+    <!-- ================= Tools ================= -->
+
+    <!-- JWT -->
+    <section class="tool" data-tool="jwt" data-title="JWT-decoder" hidden>
+      <div class="section-head">
+        <div class="cmd">jwt decode</div>
+        <h1>JWT-decoder</h1>
+      </div>
+      <div class="cols">
+        <div class="panel">
+          <label for="jwt-in">Token</label>
+          <textarea id="jwt-in" spellcheck="false" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."></textarea>
+          <div class="row">
+            <button class="btn ghost" id="jwt-sample" type="button">voorbeeld</button>
+          </div>
+          <div id="jwt-colored" class="jwt-colored" style="margin-top: 0.8rem"></div>
+          <div id="jwt-msgs"></div>
+          <div class="field" style="margin-top: 1.2rem">
+            <label for="jwt-secret">Secret (voor HS256/384/512)</label>
+            <input type="text" id="jwt-secret" spellcheck="false" placeholder="your-256-bit-secret">
+          </div>
+          <div id="jwt-verify"></div>
+        </div>
+        <div class="panel">
+          <div class="jwt-part c-header">HEADER</div>
+          <pre class="code" id="jwt-header"></pre>
+          <div class="jwt-part c-payload" style="margin-top: 1rem">PAYLOAD</div>
+          <pre class="code" id="jwt-payload"></pre>
+          <dl class="kv" id="jwt-claims" style="margin-top: 1rem"></dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- Encoder -->
+    <section class="tool" data-tool="encode" data-title="Encoder / decoder" hidden>
+      <div class="section-head">
+        <div class="cmd">encode --auto</div>
+        <h1>Encoder / decoder</h1>
+      </div>
+      <div class="panel">
+        <label for="enc-in">Invoer</label>
+        <textarea id="enc-in" spellcheck="false" placeholder="Typ of plak hier je tekst"></textarea>
+        <div class="row">
+          <select id="enc-mode" aria-label="Formaat" style="width: auto">
+            <option value="b64">Base64</option>
+            <option value="b64url">Base64URL</option>
+            <option value="hex">Hex</option>
+            <option value="url">URL</option>
+            <option value="html">HTML-entities</option>
+            <option value="bin">Binair</option>
+            <option value="rot13">ROT13</option>
+          </select>
+          <button class="btn" id="enc-encode" type="button">encode ↓</button>
+          <button class="btn ghost" id="enc-decode" type="button">decode ↓</button>
+          <button class="btn ghost" id="enc-swap" type="button" title="Uitvoer naar invoer">⇅ wissel</button>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="label" style="display: flex; justify-content: space-between; align-items: center">
+          <span>Uitvoer</span>
+          <button class="btn ghost small" data-copy="enc-out" type="button">kopieer</button>
+        </div>
+        <textarea id="enc-out" spellcheck="false" readonly></textarea>
+        <div id="enc-msg"></div>
+      </div>
+    </section>
+
+    <!-- Hash -->
+    <section class="tool" data-tool="hash" data-title="Hash-generator" hidden>
+      <div class="section-head">
+        <div class="cmd">sha256sum</div>
+        <h1>Hash-generator</h1>
+      </div>
+      <div class="cols">
+        <div class="panel">
+          <label for="hash-in">Tekst</label>
+          <textarea id="hash-in" spellcheck="false" placeholder="Typ iets om te hashen"></textarea>
+          <div class="row">
+            <label class="btn ghost" style="margin: 0; color: var(--green)">
+              bestand kiezen
+              <input type="file" id="hash-file" hidden>
+            </label>
+            <span class="hint" id="hash-src" style="margin: 0"></span>
+          </div>
+          <div class="field" style="margin-top: 1.2rem">
+            <label for="hash-cmp">Vergelijk met hash (optioneel)</label>
+            <input type="text" id="hash-cmp" spellcheck="false" placeholder="plak een verwachte hash">
+          </div>
+          <div id="hash-cmp-msg"></div>
+        </div>
+        <div class="panel hash-list" id="hash-out"></div>
+      </div>
+    </section>
+
+    <!-- Subnet -->
+    <section class="tool" data-tool="subnet" data-title="Subnetcalculator" hidden>
+      <div class="section-head">
+        <div class="cmd">ipcalc</div>
+        <h1>Subnetcalculator</h1>
+      </div>
+      <div class="cols">
+        <div class="panel">
+          <label for="sub-in">IP-adres met prefix of subnetmasker</label>
+          <input type="text" id="sub-in" spellcheck="false" value="192.168.10.37/26" placeholder="10.0.0.1/8 of 10.0.0.1 255.0.0.0">
+          <div class="row">
+            <input type="range" id="sub-range" min="0" max="32" value="26" aria-label="Prefixlengte">
+            <span id="sub-prefix" style="font-size: 0.85rem; color: var(--green); min-width: 3ch">/26</span>
+          </div>
+          <div id="sub-msg"></div>
+          <div class="bin" id="sub-bin" style="margin-top: 1rem"></div>
+        </div>
+        <div class="panel">
+          <dl class="kv" id="sub-out"></dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- Wachtwoord -->
+    <section class="tool" data-tool="password" data-title="Wachtwoorden" hidden>
+      <div class="section-head">
+        <div class="cmd">pwgen --secure</div>
+        <h1>Wachtwoorden</h1>
+      </div>
+      <div class="cols">
+        <div class="panel">
+          <div class="label">Generator</div>
+          <div class="big-out" id="pw-out"></div>
+          <div class="row">
+            <input type="range" id="pw-len" min="8" max="64" value="20" aria-label="Lengte">
+            <span id="pw-len-val" style="font-size: 0.85rem; color: var(--green); min-width: 3ch">20</span>
+          </div>
+          <div class="row">
+            <label class="check"><input type="checkbox" id="pw-lower" checked> a-z</label>
+            <label class="check"><input type="checkbox" id="pw-upper" checked> A-Z</label>
+            <label class="check"><input type="checkbox" id="pw-digits" checked> 0-9</label>
+            <label class="check"><input type="checkbox" id="pw-symbols" checked> !@#$</label>
+            <label class="check"><input type="checkbox" id="pw-ambig"> zonder 0O1lI</label>
+          </div>
+          <div class="row">
+            <button class="btn" id="pw-gen" type="button">↻ nieuw</button>
+            <button class="btn ghost" data-copy="pw-out" type="button">kopieer</button>
+            <button class="btn ghost" id="pw-test-this" type="button">test deze →</button>
+          </div>
+        </div>
+        <div class="panel">
+          <label for="pw-test">Sterkte testen</label>
+          <input type="password" id="pw-test" spellcheck="false" autocomplete="off" placeholder="Typ een wachtwoord">
+          <div class="row" style="margin-top: 0.5rem">
+            <label class="check"><input type="checkbox" id="pw-show"> tonen</label>
+          </div>
+          <div class="meter"><span id="pw-meter"></span></div>
+          <dl class="kv" id="pw-stats" style="margin-top: 1rem"></dl>
+          <div id="pw-tips"></div>
+          <p class="hint">Schatting op basis van lengte en tekensoorten, bij 10 miljard pogingen per seconde (offline aanval met snelle GPU's).</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Unix-tijd -->
+    <section class="tool" data-tool="time" data-title="Unix-tijd" hidden>
+      <div class="section-head">
+        <div class="cmd">date +%s</div>
+        <h1>Unix-tijd</h1>
+      </div>
+      <div class="panel">
+        <div class="label">Nu</div>
+        <div class="big-out" id="time-now"></div>
+      </div>
+      <div class="cols" style="margin-top: 1rem">
+        <div class="panel">
+          <label for="time-ts">Timestamp → datum</label>
+          <input type="text" id="time-ts" spellcheck="false" inputmode="numeric" placeholder="1700000000">
+          <dl class="kv" id="time-ts-out" style="margin-top: 1rem"></dl>
+        </div>
+        <div class="panel">
+          <label for="time-date">Datum → timestamp (lokale tijd)</label>
+          <input type="datetime-local" id="time-date" step="1">
+          <dl class="kv" id="time-date-out" style="margin-top: 1rem"></dl>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>© <span id="year"></span> Wessel Smit</footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
