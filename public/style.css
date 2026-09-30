@@ -419,6 +419,24 @@ footer {
 .brand-text { overflow: hidden; text-overflow: ellipsis; }
 .brand .crumb { color: var(--muted); font-weight: 400; }
 
+.nav-right { display: flex; align-items: center; gap: 0.25rem; flex: none; }
+
+.lang-toggle {
+  display: flex;
+  gap: 0.6ch;
+  font: inherit;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  color: #4a5059;
+  background: none;
+  border: 0;
+  padding: 0.35rem 0.6rem;
+  cursor: pointer;
+}
+
+.lang-toggle span.on { color: var(--accent); }
+.lang-toggle:hover { background: var(--panel); color: var(--muted); }
+
 .back {
   font-size: 0.72rem;
   letter-spacing: 0.1em;

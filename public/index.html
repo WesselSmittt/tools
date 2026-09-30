@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tools · Wessel Smit</title>
-  <meta name="description" content="Security- en netwerktools die volledig in je browser draaien: JWT-decoder, encoder, hashes, subnetcalculator, wachtwoorden en Unix-tijd.">
+  <meta name="description" content="Security and networking tools that run entirely in your browser: JWT decoder, encoder, hashes, subnet calculator, passwords and Unix time.">
   <meta name="theme-color" content="#0b0c0e">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%230b0c0e'/><path d='M18 28h14l8 38 10-38h0l10 38 8-38h14L68 76H56L50 52 44 76H32Z' fill='%23ff5a1f'/></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,9 +15,12 @@
 <body>
 
   <header class="nav">
-    <nav class="nav-inner" aria-label="Navigatie">
+    <nav class="nav-inner" aria-label="Navigation" data-nl-aria-label="Navigatie">
       <a href="#" class="brand"><span class="brand-mark" aria-hidden="true">W</span><span class="brand-text">WESSEL SMIT <span class="crumb" id="nav-path">/ TOOLS</span></span></a>
-      <a href="https://wesselsmit.com/" class="back" id="nav-back">← portfolio</a>
+      <div class="nav-right">
+        <button class="lang-toggle" type="button" data-lang-toggle><span data-lang="en">EN</span><span data-lang="nl">NL</span></button>
+        <a href="https://wesselsmit.com/" class="back" id="nav-back">← portfolio</a>
+      </div>
     </nav>
   </header>
 
@@ -27,7 +30,7 @@
       <div class="section-head">
         <div class="cmd">ls ./tools</div>
         <h1>Tools</h1>
-        <p>Handige tools voor security, netwerken en development.</p>
+        <p data-nl="Handige tools voor security, netwerken en development.">Handy tools for security, networking and development.</p>
       </div>
 
       <!--
@@ -39,64 +42,64 @@
       <div class="modules-grid">
         <a href="#jwt" class="card" style="--i: 0">
           <div class="card-icon" aria-hidden="true">TOOL-01</div>
-          <h2>JWT-decoder</h2>
-          <p>Bekijk header en payload van een JSON Web Token, check de vervaldatum en verifieer HMAC-handtekeningen.</p>
+          <h2 data-nl="JWT-decoder">JWT decoder</h2>
+          <p data-nl="Bekijk header en payload van een JSON Web Token, check de vervaldatum en verifieer HMAC-handtekeningen.">Inspect the header and payload of a JSON Web Token, check the expiry and verify HMAC signatures.</p>
           <span class="arrow" aria-hidden="true">→</span>
         </a>
         <a href="#encode" class="card" style="--i: 1">
           <div class="card-icon" aria-hidden="true">TOOL-02</div>
           <h2>Encoder / decoder</h2>
-          <p>Base64, Base64URL, hex, URL, HTML-entities, binair en ROT13 heen en terug.</p>
+          <p data-nl="Base64, Base64URL, hex, URL, HTML-entities, binair en ROT13 heen en terug.">Base64, Base64URL, hex, URL, HTML entities, binary and ROT13, both ways.</p>
           <span class="arrow" aria-hidden="true">→</span>
         </a>
         <a href="#hash" class="card" style="--i: 2">
           <div class="card-icon" aria-hidden="true">TOOL-03</div>
-          <h2>Hash-generator</h2>
-          <p>MD5, SHA-1, SHA-256, SHA-384 en SHA-512 van tekst of een bestand.</p>
+          <h2 data-nl="Hash-generator">Hash generator</h2>
+          <p data-nl="MD5, SHA-1, SHA-256, SHA-384 en SHA-512 van tekst of een bestand.">MD5, SHA-1, SHA-256, SHA-384 and SHA-512 of text or a file.</p>
           <span class="arrow" aria-hidden="true">→</span>
         </a>
         <a href="#subnet" class="card" style="--i: 3">
           <div class="card-icon" aria-hidden="true">TOOL-04</div>
-          <h2>Subnetcalculator</h2>
-          <p>Netwerk, broadcast, host-range, wildcard en binaire weergave van elk IPv4-subnet.</p>
+          <h2 data-nl="Subnetcalculator">Subnet calculator</h2>
+          <p data-nl="Netwerk, broadcast, host-range, wildcard en binaire weergave van elk IPv4-subnet.">Network, broadcast, host range, wildcard and binary view of any IPv4 subnet.</p>
           <span class="arrow" aria-hidden="true">→</span>
         </a>
         <a href="#password" class="card" style="--i: 4">
           <div class="card-icon" aria-hidden="true">TOOL-05</div>
-          <h2>Wachtwoorden</h2>
-          <p>Genereer sterke wachtwoorden en meet hoe lang het kraken van je wachtwoord zou duren.</p>
+          <h2 data-nl="Wachtwoorden">Passwords</h2>
+          <p data-nl="Genereer sterke wachtwoorden en meet hoe lang het kraken van je wachtwoord zou duren.">Generate strong passwords and measure how long it would take to crack yours.</p>
           <span class="arrow" aria-hidden="true">→</span>
         </a>
         <a href="#time" class="card" style="--i: 5">
           <div class="card-icon" aria-hidden="true">TOOL-06</div>
-          <h2>Unix-tijd</h2>
-          <p>Zet Unix-timestamps om naar leesbare datums en andersom, in seconden of milliseconden.</p>
+          <h2 data-nl="Unix-tijd">Unix time</h2>
+          <p data-nl="Zet Unix-timestamps om naar leesbare datums en andersom, in seconden of milliseconden.">Convert Unix timestamps to readable dates and back, in seconds or milliseconds.</p>
           <span class="arrow" aria-hidden="true">→</span>
         </a>
       </div>
 
-      <p class="privacy"><b>●</b> Alles draait lokaal in je browser. Er wordt niets naar een server gestuurd.</p>
+      <p class="privacy"><b>●</b> <span data-nl="Alles draait lokaal in je browser. Er wordt niets naar een server gestuurd.">Everything runs locally in your browser. Nothing is sent to a server.</span></p>
     </section>
 
     <!-- ================= Tools ================= -->
 
     <!-- JWT -->
-    <section class="tool" data-tool="jwt" data-title="JWT-decoder" hidden>
+    <section class="tool" data-tool="jwt" data-title="JWT decoder" data-nl-title="JWT-decoder" hidden>
       <div class="section-head">
         <div class="cmd">jwt decode</div>
-        <h1>JWT-decoder</h1>
+        <h1 data-nl="JWT-decoder">JWT decoder</h1>
       </div>
       <div class="cols">
         <div class="panel">
           <label for="jwt-in">Token</label>
           <textarea id="jwt-in" spellcheck="false" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."></textarea>
           <div class="row">
-            <button class="btn ghost" id="jwt-sample" type="button">voorbeeld</button>
+            <button class="btn ghost" id="jwt-sample" type="button" data-nl="voorbeeld">example</button>
           </div>
           <div id="jwt-colored" class="jwt-colored" style="margin-top: 0.8rem"></div>
           <div id="jwt-msgs"></div>
           <div class="field" style="margin-top: 1.2rem">
-            <label for="jwt-secret">Secret (voor HS256/384/512)</label>
+            <label for="jwt-secret" data-nl="Secret (voor HS256/384/512)">Secret (for HS256/384/512)</label>
             <input type="text" id="jwt-secret" spellcheck="false" placeholder="your-256-bit-secret">
           </div>
           <div id="jwt-verify"></div>
@@ -112,33 +115,33 @@
     </section>
 
     <!-- Encoder -->
-    <section class="tool" data-tool="encode" data-title="Encoder / decoder" hidden>
+    <section class="tool" data-tool="encode" data-title="Encoder / decoder" data-nl-title="Encoder / decoder" hidden>
       <div class="section-head">
         <div class="cmd">encode --auto</div>
         <h1>Encoder / decoder</h1>
       </div>
       <div class="panel">
-        <label for="enc-in">Invoer</label>
-        <textarea id="enc-in" spellcheck="false" placeholder="Typ of plak hier je tekst"></textarea>
+        <label for="enc-in" data-nl="Invoer">Input</label>
+        <textarea id="enc-in" spellcheck="false" placeholder="Type or paste your text here" data-nl-placeholder="Typ of plak hier je tekst"></textarea>
         <div class="row">
-          <select id="enc-mode" aria-label="Formaat" style="width: auto">
+          <select id="enc-mode" aria-label="Format" data-nl-aria-label="Formaat" style="width: auto">
             <option value="b64">Base64</option>
             <option value="b64url">Base64URL</option>
             <option value="hex">Hex</option>
             <option value="url">URL</option>
-            <option value="html">HTML-entities</option>
-            <option value="bin">Binair</option>
+            <option value="html" data-nl="HTML-entities">HTML entities</option>
+            <option value="bin" data-nl="Binair">Binary</option>
             <option value="rot13">ROT13</option>
           </select>
           <button class="btn" id="enc-encode" type="button">encode ↓</button>
           <button class="btn ghost" id="enc-decode" type="button">decode ↓</button>
-          <button class="btn ghost" id="enc-swap" type="button" title="Uitvoer naar invoer">⇅ wissel</button>
+          <button class="btn ghost" id="enc-swap" type="button" title="Output to input" data-nl-title="Uitvoer naar invoer" data-nl="⇅ wissel">⇅ swap</button>
         </div>
       </div>
       <div class="panel">
         <div class="label" style="display: flex; justify-content: space-between; align-items: center">
-          <span>Uitvoer</span>
-          <button class="btn ghost small" data-copy="enc-out" type="button">kopieer</button>
+          <span data-nl="Uitvoer">Output</span>
+          <button class="btn ghost small" data-copy="enc-out" type="button" data-nl="kopieer">copy</button>
         </div>
         <textarea id="enc-out" spellcheck="false" readonly></textarea>
         <div id="enc-msg"></div>
@@ -146,25 +149,25 @@
     </section>
 
     <!-- Hash -->
-    <section class="tool" data-tool="hash" data-title="Hash-generator" hidden>
+    <section class="tool" data-tool="hash" data-title="Hash generator" data-nl-title="Hash-generator" hidden>
       <div class="section-head">
         <div class="cmd">sha256sum</div>
-        <h1>Hash-generator</h1>
+        <h1 data-nl="Hash-generator">Hash generator</h1>
       </div>
       <div class="cols">
         <div class="panel">
-          <label for="hash-in">Tekst</label>
-          <textarea id="hash-in" spellcheck="false" placeholder="Typ iets om te hashen"></textarea>
+          <label for="hash-in" data-nl="Tekst">Text</label>
+          <textarea id="hash-in" spellcheck="false" placeholder="Type something to hash" data-nl-placeholder="Typ iets om te hashen"></textarea>
           <div class="row">
             <label class="btn ghost" style="margin: 0; color: var(--accent)">
-              bestand kiezen
+              <span data-nl="bestand kiezen">choose file</span>
               <input type="file" id="hash-file" hidden>
             </label>
             <span class="hint" id="hash-src" style="margin: 0"></span>
           </div>
           <div class="field" style="margin-top: 1.2rem">
-            <label for="hash-cmp">Vergelijk met hash (optioneel)</label>
-            <input type="text" id="hash-cmp" spellcheck="false" placeholder="plak een verwachte hash">
+            <label for="hash-cmp" data-nl="Vergelijk met hash (optioneel)">Compare with hash (optional)</label>
+            <input type="text" id="hash-cmp" spellcheck="false" placeholder="paste an expected hash" data-nl-placeholder="plak een verwachte hash">
           </div>
           <div id="hash-cmp-msg"></div>
         </div>
@@ -173,17 +176,17 @@
     </section>
 
     <!-- Subnet -->
-    <section class="tool" data-tool="subnet" data-title="Subnetcalculator" hidden>
+    <section class="tool" data-tool="subnet" data-title="Subnet calculator" data-nl-title="Subnetcalculator" hidden>
       <div class="section-head">
         <div class="cmd">ipcalc</div>
-        <h1>Subnetcalculator</h1>
+        <h1 data-nl="Subnetcalculator">Subnet calculator</h1>
       </div>
       <div class="cols">
         <div class="panel">
-          <label for="sub-in">IP-adres met prefix of subnetmasker</label>
-          <input type="text" id="sub-in" spellcheck="false" value="192.168.10.37/26" placeholder="10.0.0.1/8 of 10.0.0.1 255.0.0.0">
+          <label for="sub-in" data-nl="IP-adres met prefix of subnetmasker">IP address with prefix or subnet mask</label>
+          <input type="text" id="sub-in" spellcheck="false" value="192.168.10.37/26" placeholder="10.0.0.1/8 or 10.0.0.1 255.0.0.0" data-nl-placeholder="10.0.0.1/8 of 10.0.0.1 255.0.0.0">
           <div class="row">
-            <input type="range" id="sub-range" min="0" max="32" value="26" aria-label="Prefixlengte">
+            <input type="range" id="sub-range" min="0" max="32" value="26" aria-label="Prefix length" data-nl-aria-label="Prefixlengte">
             <span id="sub-prefix" style="font-size: 0.85rem; color: var(--accent); min-width: 3ch">/26</span>
           </div>
           <div id="sub-msg"></div>
@@ -196,17 +199,17 @@
     </section>
 
     <!-- Wachtwoord -->
-    <section class="tool" data-tool="password" data-title="Wachtwoorden" hidden>
+    <section class="tool" data-tool="password" data-title="Passwords" data-nl-title="Wachtwoorden" hidden>
       <div class="section-head">
         <div class="cmd">pwgen --secure</div>
-        <h1>Wachtwoorden</h1>
+        <h1 data-nl="Wachtwoorden">Passwords</h1>
       </div>
       <div class="cols">
         <div class="panel">
           <div class="label">Generator</div>
           <div class="big-out" id="pw-out"></div>
           <div class="row">
-            <input type="range" id="pw-len" min="8" max="64" value="20" aria-label="Lengte">
+            <input type="range" id="pw-len" min="8" max="64" value="20" aria-label="Length" data-nl-aria-label="Lengte">
             <span id="pw-len-val" style="font-size: 0.85rem; color: var(--accent); min-width: 3ch">20</span>
           </div>
           <div class="row">
@@ -214,46 +217,46 @@
             <label class="check"><input type="checkbox" id="pw-upper" checked> A-Z</label>
             <label class="check"><input type="checkbox" id="pw-digits" checked> 0-9</label>
             <label class="check"><input type="checkbox" id="pw-symbols" checked> !@#$</label>
-            <label class="check"><input type="checkbox" id="pw-ambig"> zonder 0O1lI</label>
+            <label class="check"><input type="checkbox" id="pw-ambig"> <span data-nl="zonder 0O1lI">without 0O1lI</span></label>
           </div>
           <div class="row">
-            <button class="btn" id="pw-gen" type="button">↻ nieuw</button>
-            <button class="btn ghost" data-copy="pw-out" type="button">kopieer</button>
-            <button class="btn ghost" id="pw-test-this" type="button">test deze →</button>
+            <button class="btn" id="pw-gen" type="button" data-nl="↻ nieuw">↻ new</button>
+            <button class="btn ghost" data-copy="pw-out" type="button" data-nl="kopieer">copy</button>
+            <button class="btn ghost" id="pw-test-this" type="button" data-nl="test deze →">test this →</button>
           </div>
         </div>
         <div class="panel">
-          <label for="pw-test">Sterkte testen</label>
-          <input type="password" id="pw-test" spellcheck="false" autocomplete="off" placeholder="Typ een wachtwoord">
+          <label for="pw-test" data-nl="Sterkte testen">Test strength</label>
+          <input type="password" id="pw-test" spellcheck="false" autocomplete="off" placeholder="Type a password" data-nl-placeholder="Typ een wachtwoord">
           <div class="row" style="margin-top: 0.5rem">
-            <label class="check"><input type="checkbox" id="pw-show"> tonen</label>
+            <label class="check"><input type="checkbox" id="pw-show"> <span data-nl="tonen">show</span></label>
           </div>
           <div class="meter"><span id="pw-meter"></span></div>
           <dl class="kv" id="pw-stats" style="margin-top: 1rem"></dl>
           <div id="pw-tips"></div>
-          <p class="hint">Schatting op basis van lengte en tekensoorten, bij 10 miljard pogingen per seconde (offline aanval met snelle GPU's).</p>
+          <p class="hint" data-nl="Schatting op basis van lengte en tekensoorten, bij 10 miljard pogingen per seconde (offline aanval met snelle GPU's).">Estimate based on length and character sets, at 10 billion guesses per second (offline attack with fast GPUs).</p>
         </div>
       </div>
     </section>
 
     <!-- Unix-tijd -->
-    <section class="tool" data-tool="time" data-title="Unix-tijd" hidden>
+    <section class="tool" data-tool="time" data-title="Unix time" data-nl-title="Unix-tijd" hidden>
       <div class="section-head">
         <div class="cmd">date +%s</div>
-        <h1>Unix-tijd</h1>
+        <h1 data-nl="Unix-tijd">Unix time</h1>
       </div>
       <div class="panel">
-        <div class="label">Nu</div>
+        <div class="label" data-nl="Nu">Now</div>
         <div class="big-out" id="time-now"></div>
       </div>
       <div class="cols" style="margin-top: 1rem">
         <div class="panel">
-          <label for="time-ts">Timestamp → datum</label>
+          <label for="time-ts" data-nl="Timestamp → datum">Timestamp → date</label>
           <input type="text" id="time-ts" spellcheck="false" inputmode="numeric" placeholder="1700000000">
           <dl class="kv" id="time-ts-out" style="margin-top: 1rem"></dl>
         </div>
         <div class="panel">
-          <label for="time-date">Datum → timestamp (lokale tijd)</label>
+          <label for="time-date" data-nl="Datum → timestamp (lokale tijd)">Date → timestamp (local time)</label>
           <input type="datetime-local" id="time-date" step="1">
           <dl class="kv" id="time-date-out" style="margin-top: 1rem"></dl>
         </div>
@@ -263,6 +266,7 @@
 
   <footer>© <span id="year"></span> Wessel Smit</footer>
 
+  <script src="i18n.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

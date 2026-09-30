@@ -16,7 +16,7 @@ function msg(el, type, text) {
 
 function kv(el, rows) {
   el.innerHTML = rows
-    .map(([k, v, copy]) => `<dt>${escapeHtml(k)}</dt><dd><span>${escapeHtml(v)}</span>${copy ? `<button class="btn ghost small" type="button" data-copy-text="${escapeHtml(v)}">kopieer</button>` : ""}</dd>`)
+    .map(([k, v, copy]) => `<dt>${escapeHtml(k)}</dt><dd><span>${escapeHtml(v)}</span>${copy ? `<button class="btn ghost small" type="button" data-copy-text="${escapeHtml(v)}">${L("copy", "kopieer")}</button>` : ""}</dd>`)
     .join("");
 }
 
@@ -42,7 +42,7 @@ const toHex = (bytes) => Array.from(bytes, (b) => b.toString(16).padStart(2, "0"
 
 function hexToBytes(s) {
   s = s.replace(/0x/gi, "").replace(/[\s:,-]/g, "");
-  if (s.length % 2 || /[^0-9a-f]/i.test(s)) throw new Error("Ongeldige hex-invoer");
+  if (s.length % 2 || /[^0-9a-f]/i.test(s)) throw new Error(L("Invalid hex input", "Ongeldige hex-invoer"));
   return Uint8Array.from(s.match(/../g) || [], (h) => parseInt(h, 16));
 }
 
@@ -50,7 +50,7 @@ function bytesToText(bytes) {
   try {
     return decStrict.decode(bytes);
   } catch {
-    throw new Error("Resultaat is geen geldige UTF-8-tekst (waarschijnlijk binaire data)");
+    throw new Error(L("Result is not valid UTF-8 text (probably binary data)", "Resultaat is geen geldige UTF-8-tekst (waarschijnlijk binaire data)"));
   }
 }
 
@@ -109,7 +109,7 @@ document.addEventListener("click", async (e) => {
   try {
     await navigator.clipboard.writeText(text);
     const old = btn.textContent;
-    btn.textContent = "✓ gekopieerd";
+    btn.textContent = L("✓ copied", "✓ gekopieerd");
     setTimeout(() => (btn.textContent = old), 1200);
   } catch {
     /* klembord niet beschikbaar */
@@ -129,7 +129,7 @@ function route() {
   const back = $("nav-back");
   back.href = tool ? "#" : "https://wesselsmit.com/";
   back.textContent = tool ? "← tools" : "← portfolio";
-  document.title = tool ? `${tool.dataset.title} · Tools · Wessel Smit` : "Tools · Wessel Smit";
+  document.title = tool ? `${LANG() === "nl" && tool.dataset.nlTitle ? tool.dataset.nlTitle : tool.dataset.title} · Tools · Wessel Smit` : "Tools · Wessel Smit";
   window.scrollTo(0, 0);
   if (tool) tool.querySelector("textarea, input[type=text], input[type=password]")?.focus({ preventScroll: true });
 }
@@ -142,8 +142,8 @@ $("year").textContent = new Date().getFullYear();
 const jwtIn = $("jwt-in");
 const jwtSecret = $("jwt-secret");
 const HMAC = { HS256: "SHA-256", HS384: "SHA-384", HS512: "SHA-512" };
-const rtf = new Intl.RelativeTimeFormat("nl", { numeric: "auto" });
-const dtf = new Intl.DateTimeFormat("nl-NL", { dateStyle: "medium", timeStyle: "medium" });
+const rtf = new Intl.RelativeTimeFormat(LANG(), { numeric: "auto" });
+const dtf = new Intl.DateTimeFormat(LOCALE(), { dateStyle: "medium", timeStyle: "medium" });
 
 function relative(date) {
   const s = Math.round((date - Date.now()) / 1000);
@@ -174,7 +174,7 @@ function decodeJwt() {
 
   const parts = token.split(".");
   if (parts.length !== 3) {
-    msg(msgs, "err", `Een JWT heeft 3 delen gescheiden door punten, dit token heeft er ${parts.length}.`);
+    msg(msgs, "err", L(`A JWT has 3 parts separated by dots; this token has ${parts.length}.`, `Een JWT heeft 3 delen gescheiden door punten, dit token heeft er ${parts.length}.`));
     return verifyJwt();
   }
 
@@ -185,7 +185,7 @@ function decodeJwt() {
     header = JSON.parse(bytesToText(b64ToBytes(parts[0])));
     payload = JSON.parse(bytesToText(b64ToBytes(parts[1])));
   } catch {
-    msg(msgs, "err", "Header of payload is geen geldige Base64URL-gecodeerde JSON.");
+    msg(msgs, "err", L("Header or payload is not valid Base64URL-encoded JSON.", "Header of payload is geen geldige Base64URL-gecodeerde JSON."));
     return verifyJwt();
   }
 
@@ -196,7 +196,7 @@ function decodeJwt() {
   const rows = [];
   const warnings = [];
   const now = Date.now();
-  for (const [claim, label] of [["iat", "Uitgegeven (iat)"], ["nbf", "Geldig vanaf (nbf)"], ["exp", "Verloopt (exp)"]]) {
+  for (const [claim, label] of [["iat", L("Issued (iat)", "Uitgegeven (iat)")], ["nbf", L("Valid from (nbf)", "Geldig vanaf (nbf)")], ["exp", L("Expires (exp)", "Verloopt (exp)")]]) {
     if (typeof payload[claim] === "number") {
       const d = new Date(payload[claim] * 1000);
       rows.push([label, `${dtf.format(d)} (${relative(d)})`]);
@@ -204,10 +204,10 @@ function decodeJwt() {
   }
   kv($("jwt-claims"), rows);
 
-  if (String(header.alg).toLowerCase() === "none") warnings.push(["err", "alg is \"none\": dit token heeft geen handtekening en is niet te vertrouwen."]);
-  if (typeof payload.exp === "number" && payload.exp * 1000 < now) warnings.push(["warn", "Dit token is verlopen."]);
-  if (typeof payload.nbf === "number" && payload.nbf * 1000 > now) warnings.push(["warn", "Dit token is nog niet geldig (nbf ligt in de toekomst)."]);
-  if (typeof payload.exp !== "number") warnings.push(["warn", "Geen exp-claim: dit token verloopt nooit."]);
+  if (String(header.alg).toLowerCase() === "none") warnings.push(["err", L("alg is \"none\": this token has no signature and cannot be trusted.", "alg is \"none\": dit token heeft geen handtekening en is niet te vertrouwen.")]);
+  if (typeof payload.exp === "number" && payload.exp * 1000 < now) warnings.push(["warn", L("This token has expired.", "Dit token is verlopen.")]);
+  if (typeof payload.nbf === "number" && payload.nbf * 1000 > now) warnings.push(["warn", L("This token is not valid yet (nbf is in the future).", "Dit token is nog niet geldig (nbf ligt in de toekomst).")]);
+  if (typeof payload.exp !== "number") warnings.push(["warn", L("No exp claim: this token never expires.", "Geen exp-claim: dit token verloopt nooit.")]);
   msgs.innerHTML = warnings.map(([t, m]) => `<div class="msg ${t}">${escapeHtml(m)}</div>`).join("");
 
   verifyJwt();
@@ -218,12 +218,12 @@ async function verifyJwt() {
   if (!jwtParsed) return msg(out);
   const { parts, header } = jwtParsed;
   if (!HMAC[header.alg]) {
-    return msg(out, "warn", header.alg && header.alg !== "none" ? `Verificatie werkt hier alleen voor HMAC (HS256/384/512), niet voor ${header.alg}.` : "");
+    return msg(out, "warn", header.alg && header.alg !== "none" ? L(`Verification only works for HMAC (HS256/384/512) here, not for ${header.alg}.`, `Verificatie werkt hier alleen voor HMAC (HS256/384/512), niet voor ${header.alg}.`) : "");
   }
-  if (!jwtSecret.value) return msg(out, "warn", "Vul het secret in om de handtekening te controleren.");
+  if (!jwtSecret.value) return msg(out, "warn", L("Enter the secret to check the signature.", "Vul het secret in om de handtekening te controleren."));
   const expected = b64url(await hmacSign(header.alg, jwtSecret.value, `${parts[0]}.${parts[1]}`));
-  if (expected === parts[2]) msg(out, "ok", "✓ Handtekening klopt met dit secret.");
-  else msg(out, "err", "✗ Handtekening klopt niet met dit secret.");
+  if (expected === parts[2]) msg(out, "ok", L("✓ Signature matches this secret.", "✓ Handtekening klopt met dit secret."));
+  else msg(out, "err", L("✗ Signature does not match this secret.", "✗ Handtekening klopt niet met dit secret."));
 }
 
 $("jwt-sample").addEventListener("click", async () => {
@@ -271,7 +271,7 @@ const CODECS = {
     encode: (s) => Array.from(enc.encode(s), (b) => b.toString(2).padStart(8, "0")).join(" "),
     decode: (s) => {
       const bits = s.replace(/\s+/g, "");
-      if (!bits || bits.length % 8 || /[^01]/.test(bits)) throw new Error("Binair moet bestaan uit groepjes van 8 bits (0 en 1)");
+      if (!bits || bits.length % 8 || /[^01]/.test(bits)) throw new Error(L("Binary must consist of groups of 8 bits (0 and 1)", "Binair moet bestaan uit groepjes van 8 bits (0 en 1)"));
       return bytesToText(Uint8Array.from(bits.match(/.{8}/g), (b) => parseInt(b, 2)));
     },
   },
@@ -291,7 +291,7 @@ function runCodec(direction) {
     msg($("enc-msg"));
   } catch (err) {
     out.value = "";
-    msg($("enc-msg"), "err", err instanceof URIError ? "Ongeldige URL-codering" : err.message.includes("atob") || err.name === "InvalidCharacterError" ? "Ongeldige Base64-invoer" : err.message);
+    msg($("enc-msg"), "err", err instanceof URIError ? L("Invalid URL encoding", "Ongeldige URL-codering") : err.message.includes("atob") || err.name === "InvalidCharacterError" ? L("Invalid Base64 input", "Ongeldige Base64-invoer") : err.message);
   }
 }
 
@@ -320,8 +320,8 @@ async function computeHashes() {
   hashResults = results;
   $("hash-out").innerHTML = HASHES.map((name) => `
     <div>
-      <div class="label"><span>${name}${name === "MD5" || name === "SHA-1" ? ' <span style="color: var(--amber)">(niet meer veilig)</span>' : ""}</span>
-        <button class="btn ghost small" type="button" data-copy-text="${results[name]}">kopieer</button></div>
+      <div class="label"><span>${name}${name === "MD5" || name === "SHA-1" ? ` <span style="color: var(--amber)">(${L("no longer secure", "niet meer veilig")})</span>` : ""}</span>
+        <button class="btn ghost small" type="button" data-copy-text="${results[name]}">${L("copy", "kopieer")}</button></div>
       <div class="out">${results[name]}</div>
     </div>`).join("");
   compareHash();
@@ -331,8 +331,8 @@ function compareHash() {
   const want = $("hash-cmp").value.trim().toLowerCase();
   if (!want) return msg($("hash-cmp-msg"));
   const hit = HASHES.find((n) => hashResults[n] === want);
-  if (hit) msg($("hash-cmp-msg"), "ok", `✓ Komt overeen (${hit})`);
-  else msg($("hash-cmp-msg"), "err", "✗ Komt met geen enkele hash overeen");
+  if (hit) msg($("hash-cmp-msg"), "ok", L(`✓ Matches (${hit})`, `✓ Komt overeen (${hit})`));
+  else msg($("hash-cmp-msg"), "err", L("✗ Doesn't match any hash", "✗ Komt met geen enkele hash overeen"));
 }
 
 $("hash-in").addEventListener("input", () => {
@@ -374,14 +374,14 @@ function maskToPrefix(mask) {
 
 function ipType(ip) {
   const inNet = (net, p) => (ip & ((0xffffffff << (32 - p)) >>> 0)) >>> 0 === parseIp(net);
-  if (inNet("10.0.0.0", 8) || inNet("172.16.0.0", 12) || inNet("192.168.0.0", 16)) return "Privé (RFC 1918)";
+  if (inNet("10.0.0.0", 8) || inNet("172.16.0.0", 12) || inNet("192.168.0.0", 16)) return L("Private (RFC 1918)", "Privé (RFC 1918)");
   if (inNet("127.0.0.0", 8)) return "Loopback";
   if (inNet("169.254.0.0", 16)) return "Link-local (APIPA)";
   if (inNet("100.64.0.0", 10)) return "Carrier-grade NAT (RFC 6598)";
   if (inNet("224.0.0.0", 4)) return "Multicast";
-  if (inNet("240.0.0.0", 4)) return "Gereserveerd";
-  if (inNet("0.0.0.0", 8)) return "\"Dit netwerk\" (0.0.0.0/8)";
-  return "Publiek";
+  if (inNet("240.0.0.0", 4)) return L("Reserved", "Gereserveerd");
+  if (inNet("0.0.0.0", 8)) return L("\"This network\" (0.0.0.0/8)", "\"Dit netwerk\" (0.0.0.0/8)");
+  return L("Public", "Publiek");
 }
 
 function ipClass(ip) {
@@ -390,7 +390,7 @@ function ipClass(ip) {
   if (a < 192) return "B";
   if (a < 224) return "C";
   if (a < 240) return "D (multicast)";
-  return "E (experimenteel)";
+  return L("E (experimental)", "E (experimenteel)");
 }
 
 function calcSubnet(fromRange) {
@@ -411,7 +411,7 @@ function calcSubnet(fromRange) {
       if (p === null) {
         out.innerHTML = "";
         $("sub-bin").innerHTML = "";
-        return msg($("sub-msg"), "err", "Ongeldige prefix of subnetmasker");
+        return msg($("sub-msg"), "err", L("Invalid prefix or subnet mask", "Ongeldige prefix of subnetmasker"));
       }
       prefix = p;
     }
@@ -420,7 +420,7 @@ function calcSubnet(fromRange) {
   if (ip === null) {
     out.innerHTML = "";
     $("sub-bin").innerHTML = "";
-    return msg($("sub-msg"), "err", "Ongeldig IPv4-adres");
+    return msg($("sub-msg"), "err", L("Invalid IPv4 address", "Ongeldig IPv4-adres"));
   }
   msg($("sub-msg"));
 
@@ -436,22 +436,22 @@ function calcSubnet(fromRange) {
   const last = prefix >= 31 ? broadcast : broadcast - 1;
 
   kv(out, [
-    ["Netwerk", `${ipToStr(network)}/${prefix}`, true],
-    ["Subnetmasker", ipToStr(mask), true],
+    [L("Network", "Netwerk"), `${ipToStr(network)}/${prefix}`, true],
+    [L("Subnet mask", "Subnetmasker"), ipToStr(mask), true],
     ["Wildcard", ipToStr(~mask >>> 0), true],
-    ["Broadcast", prefix >= 31 ? "– (geen, /" + prefix + ")" : ipToStr(broadcast)],
-    ["Eerste host", ipToStr(first)],
-    ["Laatste host", ipToStr(last)],
-    ["Bruikbare hosts", usable.toLocaleString("nl-NL")],
-    ["Totaal adressen", total.toLocaleString("nl-NL")],
-    ["Klasse", ipClass(ip)],
+    ["Broadcast", prefix >= 31 ? L("– (none, /", "– (geen, /") + prefix + ")" : ipToStr(broadcast)],
+    [L("First host", "Eerste host"), ipToStr(first)],
+    [L("Last host", "Laatste host"), ipToStr(last)],
+    [L("Usable hosts", "Bruikbare hosts"), usable.toLocaleString(LOCALE())],
+    [L("Total addresses", "Totaal adressen"), total.toLocaleString(LOCALE())],
+    [L("Class", "Klasse"), ipClass(ip)],
     ["Type", ipType(ip)],
     ["Hex", "0x" + ip.toString(16).padStart(8, "0").toUpperCase()],
   ]);
 
   const bits = ipToBin(ip);
   const colored = Array.from(bits, (b, i) => `<span class="${i < prefix ? "net" : "host"}">${b}</span>${i % 8 === 7 && i < 31 ? "." : ""}`).join("");
-  $("sub-bin").innerHTML = `<div class="label">Binair (<span style="color: var(--accent)">netwerk</span> / <span style="color: var(--cyan)">host</span>)</div>${colored}`;
+  $("sub-bin").innerHTML = `<div class="label">${L("Binary", "Binair")} (<span style="color: var(--accent)">${L("network", "netwerk")}</span> / <span style="color: var(--cyan)">host</span>)</div>${colored}`;
 }
 
 $("sub-in").addEventListener("input", () => calcSubnet(false));
@@ -484,7 +484,7 @@ function generatePassword() {
     .map((k) => (noAmbig ? SETS[k].replace(AMBIGUOUS, "") : SETS[k]));
 
   if (!chosen.length) {
-    $("pw-out").textContent = "Kies minstens één tekensoort";
+    $("pw-out").textContent = L("Pick at least one character set", "Kies minstens één tekensoort");
     return;
   }
 
@@ -505,13 +505,15 @@ const COMMON = new Set([
 ]);
 
 function formatDuration(sec) {
-  if (sec < 1) return "direct";
-  const units = [["eeuwen", 3153600000], ["jaar", 31536000], ["dagen", 86400], ["uur", 3600], ["minuten", 60], ["seconden", 1]];
-  if (sec > 3153600000 * 1e6) return "langer dan het heelal bestaat";
+  if (sec < 1) return L("instantly", "direct");
+  const units = L(
+    [["centuries", 3153600000], ["years", 31536000], ["days", 86400], ["hours", 3600], ["minutes", 60], ["seconds", 1]],
+    [["eeuwen", 3153600000], ["jaar", 31536000], ["dagen", 86400], ["uur", 3600], ["minuten", 60], ["seconden", 1]]);
+  if (sec > 3153600000 * 1e6) return L("longer than the universe has existed", "langer dan het heelal bestaat");
   for (const [name, size] of units) {
     if (sec >= size) {
       const v = sec / size;
-      return `${v >= 1000 ? Math.round(v).toLocaleString("nl-NL") : Math.round(v)} ${name}`;
+      return `${v >= 1000 ? Math.round(v).toLocaleString(LOCALE()) : Math.round(v)} ${name}`;
     }
   }
 }
@@ -545,30 +547,30 @@ function testPassword() {
   const base = pw.toLowerCase().replace(/[\d\W_]+$/, "");
   if (COMMON.has(pw.toLowerCase()) || COMMON.has(base)) {
     entropy = Math.min(entropy, 10);
-    tips.push(["err", "Dit wachtwoord (of de basis ervan) staat in lijsten met veelgebruikte wachtwoorden."]);
+    tips.push(["err", L("This password (or its base) appears in lists of commonly used passwords.", "Dit wachtwoord (of de basis ervan) staat in lijsten met veelgebruikte wachtwoorden.")]);
   } else if (/^(.)\1+$/.test(pw)) {
     entropy = Math.min(entropy, Math.log2(pool * len));
-    tips.push(["err", "Alleen herhaalde tekens."]);
+    tips.push(["err", L("Only repeated characters.", "Alleen herhaalde tekens.")]);
   } else if (/(0123|1234|2345|3456|4567|5678|6789|abcd|qwer|asdf|zxcv)/i.test(pw)) {
     entropy *= 0.75;
-    tips.push(["warn", "Bevat een voorspelbare reeks (zoals 1234 of qwer)."]);
+    tips.push(["warn", L("Contains a predictable sequence (like 1234 or qwer).", "Bevat een voorspelbare reeks (zoals 1234 of qwer).")]);
   }
 
-  if (len < 12) tips.push(["warn", "Gebruik minstens 12 tekens; lengte helpt het meest."]);
-  const missing = Object.entries({ lower: "kleine letters", upper: "hoofdletters", digits: "cijfers", symbols: "symbolen" }).filter(([k]) => !has[k]).map(([, v]) => v);
-  if (missing.length && entropy < 80) tips.push(["warn", `Voeg ${missing.join(", ")} toe.`]);
+  if (len < 12) tips.push(["warn", L("Use at least 12 characters; length helps the most.", "Gebruik minstens 12 tekens; lengte helpt het meest.")]);
+  const missing = Object.entries(L({ lower: "lowercase letters", upper: "uppercase letters", digits: "digits", symbols: "symbols" }, { lower: "kleine letters", upper: "hoofdletters", digits: "cijfers", symbols: "symbolen" })).filter(([k]) => !has[k]).map(([, v]) => v);
+  if (missing.length && entropy < 80) tips.push(["warn", L(`Add ${missing.join(", ")}.`, `Voeg ${missing.join(", ")} toe.`)]);
 
   const seconds = 2 ** entropy / 2 / 1e10;
-  const levels = [[28, "Zeer zwak", "var(--red)"], [36, "Zwak", "var(--red)"], [60, "Redelijk", "var(--amber)"], [80, "Sterk", "var(--green)"], [Infinity, "Zeer sterk", "var(--green)"]];
+  const levels = [[28, L("Very weak", "Zeer zwak"), "var(--red)"], [36, L("Weak", "Zwak"), "var(--red)"], [60, L("Fair", "Redelijk"), "var(--amber)"], [80, L("Strong", "Sterk"), "var(--green)"], [Infinity, L("Very strong", "Zeer sterk"), "var(--green)"]];
   const [, label, color] = levels.find(([max]) => entropy < max);
 
   meter.style.width = Math.max(4, Math.min(100, entropy)) + "%";
   meter.style.setProperty("--c", color);
   kv($("pw-stats"), [
-    ["Sterkte", label],
-    ["Lengte", `${len} tekens`],
-    ["Entropie", `± ${Math.round(entropy)} bits`],
-    ["Kraaktijd", formatDuration(seconds)],
+    [L("Strength", "Sterkte"), label],
+    [L("Length", "Lengte"), `${len} ${L("characters", "tekens")}`],
+    [L("Entropy", "Entropie"), `± ${Math.round(entropy)} bits`],
+    [L("Time to crack", "Kraaktijd"), formatDuration(seconds)],
   ]);
   $("pw-stats").querySelector("dd span").style.color = color;
   $("pw-tips").innerHTML = tips.map(([t, m]) => `<div class="msg ${t}">${escapeHtml(m)}</div>`).join("");
@@ -590,7 +592,7 @@ generatePassword();
 
 // ================= Unix-tijd =================
 
-const dtLong = new Intl.DateTimeFormat("nl-NL", { dateStyle: "full", timeStyle: "long" });
+const dtLong = new Intl.DateTimeFormat(LOCALE(), { dateStyle: "full", timeStyle: "long" });
 
 function tickNow() {
   const ms = Date.now();
@@ -601,16 +603,16 @@ function tsToDate() {
   const raw = $("time-ts").value.trim();
   const out = $("time-ts-out");
   if (!raw) return (out.innerHTML = "");
-  if (!/^-?\d+(\.\d+)?$/.test(raw)) return kv(out, [["Fout", "Alleen cijfers"]]);
+  if (!/^-?\d+(\.\d+)?$/.test(raw)) return kv(out, [[L("Error", "Fout"), L("Digits only", "Alleen cijfers")]]);
   const n = Number(raw);
   const isMs = Math.abs(n) >= 1e11;
   const d = new Date(isMs ? n : n * 1000);
-  if (isNaN(d)) return kv(out, [["Fout", "Buiten bereik"]]);
+  if (isNaN(d)) return kv(out, [[L("Error", "Fout"), L("Out of range", "Buiten bereik")]]);
   kv(out, [
-    ["Eenheid", isMs ? "milliseconden" : "seconden"],
+    [L("Unit", "Eenheid"), isMs ? L("milliseconds", "milliseconden") : L("seconds", "seconden")],
     ["UTC", d.toISOString(), true],
-    ["Lokaal", dtLong.format(d)],
-    ["Relatief", relative(d)],
+    [L("Local", "Lokaal"), dtLong.format(d)],
+    [L("Relative", "Relatief"), relative(d)],
   ]);
 }
 
@@ -620,8 +622,8 @@ function dateToTs() {
   if (!v) return (out.innerHTML = "");
   const d = new Date(v);
   kv(out, [
-    ["Seconden", String(Math.floor(d.getTime() / 1000)), true],
-    ["Milliseconden", String(d.getTime()), true],
+    [L("Seconds", "Seconden"), String(Math.floor(d.getTime() / 1000)), true],
+    [L("Milliseconds", "Milliseconden"), String(d.getTime()), true],
     ["UTC", d.toISOString(), true],
   ]);
 }
