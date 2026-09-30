@@ -125,7 +125,7 @@ function route() {
   const tool = document.querySelector(`.tool[data-tool="${CSS.escape(name)}"]`);
   $("view-home").hidden = !!tool;
   tools.forEach((t) => (t.hidden = t !== tool));
-  $("nav-path").textContent = tool ? `~/tools/${name}` : "~/tools";
+  $("nav-path").textContent = tool ? `/ TOOLS / ${name.toUpperCase()}` : "/ TOOLS";
   const back = $("nav-back");
   back.href = tool ? "#" : "https://wesselsmit.com/";
   back.textContent = tool ? "← tools" : "← portfolio";
@@ -451,7 +451,7 @@ function calcSubnet(fromRange) {
 
   const bits = ipToBin(ip);
   const colored = Array.from(bits, (b, i) => `<span class="${i < prefix ? "net" : "host"}">${b}</span>${i % 8 === 7 && i < 31 ? "." : ""}`).join("");
-  $("sub-bin").innerHTML = `<div class="label">Binair (<span style="color: var(--green)">netwerk</span> / <span style="color: var(--cyan)">host</span>)</div>${colored}`;
+  $("sub-bin").innerHTML = `<div class="label">Binair (<span style="color: var(--accent)">netwerk</span> / <span style="color: var(--cyan)">host</span>)</div>${colored}`;
 }
 
 $("sub-in").addEventListener("input", () => calcSubnet(false));
